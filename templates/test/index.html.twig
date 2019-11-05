@@ -12,12 +12,14 @@
     }
 
     .order_detail {
+      float: left;
       margin-left: 20px;
+      width: 45%;
     }
 
     #map {
+      width: 100%;
       display: none;
-      width: 60%;
       height: 400px;
       background-color: grey;
     }
@@ -31,7 +33,7 @@
     <h1>Hello {{ controller_name }}! ✅</h1>
 
     This friendly message is coming from:
-  <div id="buttons"><button class="sync" >Sync Now</button><button class="load" >Load from DB</button><button class="csv" >Download CSV</button><button class="jsonl" >Download Jsonl</button><button onclick="initMap()">test  peta</button></div>
+  <div id="buttons"><button class="sync" >Sync Now</button><button class="load" >Load from DB</button><button class="csv" >Download CSV</button><button class="jsonl" >Download Jsonl</button></div>
   <div id="data">
     <div class="order-list">
       <table class="table">
@@ -71,6 +73,48 @@
 <script>
 
 $(document).ready(function(){
+    /* Sync data from jsonl file and store into DB*/
+
+    $('.sync').on('click', function(e) {
+      e.preventDefault();
+      var orderRow = '';
+      $('.table').replaceWith(`
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Oder ID</th>
+              <th>Order Date</th>
+              <th>Subtotal</th>
+              <th>Grand Total</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      `);
+      $.ajax({
+        type: "GET",
+        url: 'http://localhost:8000/orders',
+        dataType: 'html',
+        success: function (data) {
+          var result = jQuery.parseJSON(data);
+          $.each(result, function(key, value) {
+            orderRow = `<tr>
+                          <td>
+                            <a href="#" onclick="initMap(`+value.latitude+`,`+value.longitude+`)">
+                               `+value.order_id+`
+                            </a>
+                          </td>
+                          <td> `+value.order_datetime +` </td>
+                          <td> `+value.total_order_value+` </td>
+                          <td> `+value.grand_total+` </td>
+                        </tr>`;
+            $('.table tbody').append(orderRow);
+          });
+        }
+      });
+    });
+
+    /* Load existing data from DB*/
     $('.load').on('click', function(e) {
       e.preventDefault();
       var orderRow = '';
