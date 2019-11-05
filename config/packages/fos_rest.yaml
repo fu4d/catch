@@ -1,0 +1,20 @@
+# Read the documentation: https://symfony.com/doc/master/bundles/FOSRestBundle/index.html
+fos_rest:
+
+  routing_loader :
+    default_format: json
+    include_format: false
+  format_listener:
+    rules:
+      - { path: '^/api', priorities: ['json'], fallback_format: json }
+      - { path: '^/test', priorities: ['json', 'html'], fallback_format: json }
+      - { path: '^/coordinate', priorities: ['json'], fallback_format: json }
+
+  exception:
+    enabled: true
+
+  view:
+    view_response_listener: 'force'
+    formats:
+      json: true
+

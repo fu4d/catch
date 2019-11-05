@@ -1,0 +1,138 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TestController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+
+    .order-list {
+      float: left;
+    }
+
+    .order_detail {
+      margin-left: 20px;
+    }
+
+    #map {
+      display: none;
+      width: 60%;
+      height: 400px;
+      background-color: grey;
+    }
+
+    .table th,td {
+      padding: 10px;
+    }
+</style>
+
+<div class="example-wrapper">
+    <h1>Hello {{ controller_name }}! ✅</h1>
+
+    This friendly message is coming from:
+  <div id="buttons"><button class="sync" >Sync Now</button><button class="load" >Load from DB</button><button class="csv" >Download CSV</button><button class="jsonl" >Download Jsonl</button><button onclick="initMap()">test  peta</button></div>
+  <div id="data">
+    <div class="order-list">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Oder ID</th>
+            <th>Order Date</th>
+            <th>Subtotal</th>
+            <th>Grand Total</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for dataOrders in orders  %}
+          <tr>
+            <td>
+              <a href="files/{{ dataOrders[0] }}">
+                {{ dataOrders[0] }}
+              </a>
+            </td>
+            <td>{{ dataOrders[1] }}</td>
+            <td>{{ dataOrders[2] }}</td>
+            <td>{{ dataOrders[7] }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="order_detail">
+      <div id="order_data"></div>
+      <div id="map"></div>
+    </div>
+
+  </div>
+
+
+<script>
+
+$(document).ready(function(){
+    $('.load').on('click', function(e) {
+      e.preventDefault();
+      var orderRow = '';
+      $('.table').replaceWith(`
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Oder ID</th>
+              <th>Order Date</th>
+              <th>Subtotal</th>
+              <th>Grand Total</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      `);
+      $.ajax({
+        type: "GET",
+        url: 'http://localhost:8000/api/orders',
+        dataType: 'html',
+        success: function (data) {
+          var result = jQuery.parseJSON(data);
+          $.each(result, function(key, value) {
+            orderRow = `<tr>
+                          <td>
+                            <a href="#" onclick="initMap(`+value.latitude+`,`+value.longitude+`)">
+                               `+value.order_id+`
+                            </a>
+                          </td>
+                          <td> `+value.order_datetime +` </td>
+                          <td> `+value.total_order_value+` </td>
+                          <td> `+value.grand_total+` </td>
+                        </tr>`;
+            $('.table tbody').append(orderRow);
+          });
+        }
+      });
+    });
+});
+
+// Initialize and add the map
+function initMap(latitude,longitude) {
+  // The location of customer
+  var location = {lat: latitude, lng: longitude};
+  // The map, centered at customer
+  var map = new google.maps.Map(
+      document.getElementById('map'), {zoom: 4, center: location});
+  // The marker, positioned at customer
+  var marker = new google.maps.Marker({position: location, map: map});
+  $('#map').show();
+}
+</script>
+<script>
+
+    </script>
+    <!--Load the API from the specified URL
+    * The async attribute allows the browser to render the page while the API loads
+    * The key parameter will contain your own API key (which is not needed for this tutorial)
+    * The callback parameter executes the initMap() function
+    -->
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWuKRPk3vh3Mu-T24z9cvbMcSYveYdexo">
+    </script>
+</div>
+{% endblock %}
