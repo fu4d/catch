@@ -9,6 +9,7 @@ composer require jms/serializer-bundle
 composer require symfony/validator
 composer require symfony/form
 ```
+Make sure this system running under PHP 7.1 +
 
 ## Getting Started
 
