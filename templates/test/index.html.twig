@@ -88,7 +88,7 @@ $(document).ready(function(){
           $.each(result, function(key, value) {
             orderRow = `<tr>
                           <td>
-                            <a href="#" onclick="initMap(`+value.latitude+`,`+value.longitude+`)">
+                            <a href="#" onclick="getOrder(`+value.order_id+`,`+value.latitude+`,`+value.longitude+`)">
                                `+value.order_id+`
                             </a>
                           </td>
@@ -128,7 +128,7 @@ $(document).ready(function(){
           $.each(result, function(key, value) {
             orderRow = `<tr>
                           <td>
-                            <a href="#" onclick="initMap(`+value.latitude+`,`+value.longitude+`)">
+                            <a href="#" onclick="getOrder(`+value.order_id+`,`+value.latitude+`,`+value.longitude+`)">
                                `+value.order_id+`
                             </a>
                           </td>
@@ -160,8 +160,6 @@ $(document).ready(function(){
     $('.email').on('click', function(e) {
       e.preventDefault();
 
-        alert($('input[name="mail_address"]').val());
-
       $.ajax({
         type: "POST",
         url: 'http://localhost:8000/sendmail',
@@ -185,6 +183,46 @@ function initMap(latitude,longitude) {
   // The marker, positioned at customer
   var marker = new google.maps.Marker({position: location, map: map});
   $('#map').show();
+}
+
+function getOrder(order_id, latitude,longitude) {
+
+      $('#order_data').replaceWith(`
+        <div id="order_data"><b><u>Detail Order</u></b></div>
+      `);
+      $.ajax({
+        type: "GET",
+        url: 'http://localhost:8000/api/orders/'+order_id,
+        dataType: 'html',
+        success: function (data) {
+          var result = jQuery.parseJSON(data);
+          $.each(result, function(key, value) {
+            orderRow = `<ul>
+                          <li>Order ID: `+value.order_id +`</li>
+                          <li>Order Date: `+value.order_datetime +` </li>
+                          <li>Customer ID:  `+value.customer_id+` </li>
+                          <li>First Name: `+value.customer_fname+` </li>
+                          <li>Last Name: `+value.customer_lname+` </li>
+                          <li>Email: `+value.customer_email+` </li>
+                          <li>Phone: `+value.customer_phone+` </li>
+                          <li>Street: `+value.customer_street+` </li>
+                          <li>Postcode: `+value.customer_postcode+` </li>
+                          <li>Suburban: `+value.customer_suburb+` </li>
+                          <li>State: `+value.customer_state+` </li>
+                          <li>Distinct Unit Count: `+value.distinct_unit_count+` </li>
+                          <li>Total Unit Count: `+value.total_units_count+` </li>
+                          <li>Average Unit Price: `+value.average_unit_price+` </li>
+                          <li>Total Order Value: `+value.total_order_value+` </li>
+                          <li>Total Discount: `+value.discount+` </li>
+                          <li>Subtotal: `+value.subtotal+` </li>
+                          <li>Shipping Fee: `+value.shipping_fee+` </li>
+                          <li>Grand Total: `+value.grand_total+` </li>
+                        </ul>`;
+            $('#order_data').append(orderRow);
+          });
+          initMap(latitude,longitude);
+        }
+      });
 }
 </script>
 <script>
