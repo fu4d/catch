@@ -193,6 +193,8 @@ class OrdersController extends FOSRestController
             $averageUnitPrice = (float) $subtotal / $totalItems;
             $subtotalItems = $subtotal - $discount;
             $grandTotal = $subtotalItems + $data['shipping_price'];
+            if(!$grandTotal)
+                continue;
             $customerId = $data["customer"]["customer_id"];
             $customerFname = $data["customer"]["first_name"];
             $customerLname = $data["customer"]["last_name"];
