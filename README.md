@@ -53,4 +53,44 @@ Please run this code to generate table and data
 php bin/console doctrine:migrations:migrate
 ```
 
+## Run server
+After all steps, you can start the server that will run o port 8000, then please open your browser by URI address
+```
+http://localhost:8000/test
+```
+* I created TestController.php as our main environment system
 
+
+# Additional Info
+
+## structure System
+
+All working files stored in these directories:
+
+```
+Root
+    - config
+        - package
+            - fos_rest.yml  # to define format listener of rout path
+        - routes.yml # define route alias of controller (in several case I define route in controller to simulate annotation route
+        - services.yml # I defined some parameter there to make it globally and able to be called anywhere
+        
+   - public
+        - files # It will be used to store exported csv and jsonl files
+        - source # I use this directory to simulate load data from local
+        
+   - src 
+        - Controller # it is collection of all controller files 
+        - Entity # it is collection of entity definition that will be model to get and setter variable
+        - Form # it user to validate form value according to entity definition    
+        - Migration # it is generate sql when we run migration process based on entiity definition. we can put additional query that will be run while migration process running.
+        - Repository # it generated automatically when we create entity
+        
+   - templates # it is twig teplate collection.
+   
+- .env # main configuration of environment system. we can define in this variable to make it globallly
+    
+    
+        
+
+```
