@@ -2,14 +2,11 @@
 
 namespace App\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Finder\Finder;
 //use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpFoundation\Response;
-use App\Entity\Orders;
-use App\Form\OrdersType;
-use Aws\Sdk;
 
 class TestController extends AbstractController
 {
@@ -18,23 +15,30 @@ class TestController extends AbstractController
      */
     public function index(\Swift_Mailer $mailer)
     {
-        $message = (new \Swift_Message('Hello Email'))
-        ->setFrom('anabella.fairiza@gmail.com')
-        ->setTo('fuad.abd.j@gmail.com')
-        ->setBody(
-            $this->render('test/index.html.twig', [
-            'controller_name' => 'TestController',
-            'orders' => [] //$orderCollections[0],
-        ]),
-            'text/html'
-        );
-
-        $mailer->send($message);
-
         return $this->render('test/index.html.twig', [
             'controller_name' => 'TestController',
         ]);
     }
 
+    /**
+     * @Route("/sendmail", name="sendmail")
+     */
+    public function sendMail(Request $request, \Swift_Mailer $mailer){
+        $emailAddress = $request->getContent();
+        $jsonName = "out.jsonl";
+        $jsonlFile = $this->getParameter('files_directory')."/".$jsonName;
+        $csvName = "out.csv";
+        $csvFile = $this->getParameter('files_directory')."/".$csvName;
+        $message = (new \Swift_Message('Orders Report'))
+        ->setFrom('anabella.fairiza@gmail.com')
+        ->setTo($emailAddress)
+        ->setBody('<p>Dear all,</p>', 'text/html')
+        ->addPart('<q>Here is attached some file csv and jsonl.</q>', 'text/html')
+        ->attach(\Swift_Attachment::fromPath($csvFile))
+        ->attach(\Swift_Attachment::fromPath($jsonlFile));
 
+        $mailer->send($message);
+
+        return ['status'=>'ok'];
+    }
 }

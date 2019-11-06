@@ -30,10 +30,11 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <h1>Hello, This is data processor of orders! ✅</h1>
 
-    This friendly message is coming from:
+    Please select an action below:
   <div id="buttons"><button class="sync" >Sync Now</button><button class="load" >Load from DB</button><button class="csv" >Download CSV</button><button class="jsonl" >Download Jsonl</button></div>
+  <div><input type="text" name="mail_address" width="150px" /><button class="email">Send Me Email</button></div>
   <div id="data">
     <div class="order-list">
       <table class="table">
@@ -45,20 +46,7 @@
             <th>Grand Total</th>
           </tr>
         </thead>
-        <tbody>
-        {% for dataOrders in orders  %}
-          <tr>
-            <td>
-              <a href="files/{{ dataOrders[0] }}">
-                {{ dataOrders[0] }}
-              </a>
-            </td>
-            <td>{{ dataOrders[1] }}</td>
-            <td>{{ dataOrders[2] }}</td>
-            <td>{{ dataOrders[7] }}</td>
-          </tr>
-        {% endfor %}
-        </tbody>
+        <tbody></tbody>
       </table>
     </div>
 
@@ -93,7 +81,7 @@ $(document).ready(function(){
       `);
       $.ajax({
         type: "GET",
-        url: 'http://localhost:8000/orders',
+        url: 'http://localhost:8000/api/sync',
         dataType: 'html',
         success: function (data) {
           var result = jQuery.parseJSON(data);
@@ -150,6 +138,38 @@ $(document).ready(function(){
                         </tr>`;
             $('.table tbody').append(orderRow);
           });
+        }
+      });
+    });
+
+
+    /* Download CSV*/
+    $('.csv').on('click', function(e) {
+      window.location.href = 'http://localhost:8000/csv';
+    });
+
+
+
+    /* Download Jsonl*/
+    $('.jsonl').on('click', function(e) {
+      window.location.href = 'http://localhost:8000/jsonl';
+    });
+
+
+    /* Send Email */
+    $('.email').on('click', function(e) {
+      e.preventDefault();
+
+        alert($('input[name="mail_address"]').val());
+
+      $.ajax({
+        type: "POST",
+        url: 'http://localhost:8000/sendmail',
+        dataType: 'json',
+        data: $('input[name="mail_address"]').val(),
+        success: function (data) {
+          console.log(data);
+
         }
       });
     });

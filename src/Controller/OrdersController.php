@@ -17,7 +17,7 @@ class OrdersController extends FOSRestController
 {
     const LINE_SEPARATOR = "\n";
 
-    public function index()
+    public function syncAction()
     {
         //$orders = $this->loadLocalData();
 
@@ -235,8 +235,8 @@ class OrdersController extends FOSRestController
             $entityManager->persist($order);
             $entityManager->flush();
 
-            //$orders[] = [$orderId,date(DATE_ISO8601, strtotime($orderDate->format('Y-m-d H:i:s'))),$subtotalItems,$averageUnitPrice,$totalUniqueItems,$totalItems,$customerState,$grandTotal];
-
+            $orders[] = [$orderId,date(DATE_ISO8601, strtotime($orderDate->format('Y-m-d H:i:s'))),$subtotalItems,$averageUnitPrice,$totalUniqueItems,$totalItems,$customerState,$grandTotal];
+/*
             $orders[] = [
                         'order_id'          => $orderId,
                         'order_datetime'    => date(DATE_ISO8601, strtotime($orderDate->format('Y-m-d H:i:s'))),
@@ -244,7 +244,7 @@ class OrdersController extends FOSRestController
                         'longitude'         => $longitude,
                         'latitude'          => $latitude,
                         'grand_total'       => $grandTotal
-                    ];
+                    ];*/
 
         }
         return $orders;
@@ -256,7 +256,7 @@ class OrdersController extends FOSRestController
      * @param  string $jsonLines JSON Lines to deline into JSON
      * @return string
      */
-    public function getGeoLocation($postcode){
+    protected function getGeoLocation($postcode){
         // it always interupted after 80 request and very slow response. So, I change to local data to make it faster
         //$url = "http://v0.postcodeapi.com.au/suburbs/".$postcode.".json";
 
@@ -271,19 +271,6 @@ class OrdersController extends FOSRestController
         $coordinate['longitude'] = $location[0]['longitude'];
         $coordinate['latitude'] = $location[0]['latitude'];
         return  $coordinate;
-    }
-
-    protected function writeCSV($orders){
-
-        $fp = fopen($this->getParameter('files_directory')."/".strtotime('now')."_out.csv", "w");
-        foreach ($orders as $data) {
-            fputcsv(
-                $fp,
-                $data,
-                ','
-            );
-        }
-        fclose($fp);
     }
 
 

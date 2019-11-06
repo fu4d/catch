@@ -6,9 +6,13 @@ fos_rest:
     include_format: false
   format_listener:
     rules:
+      - { path: '^/orders', priorities: ['json'], fallback_format: json }
       - { path: '^/api', priorities: ['json'], fallback_format: json }
       - { path: '^/test', priorities: ['json', 'html'], fallback_format: json }
       - { path: '^/coordinate', priorities: ['json'], fallback_format: json }
+      - { path: '^/csv', priorities: ['json'], fallback_format: json }
+      - { path: '^/jsonl', priorities: ['json'], fallback_format: json }
+      - { path: '^/sendmail', priorities: ['json'], fallback_format: json }
 
   exception:
     enabled: true
