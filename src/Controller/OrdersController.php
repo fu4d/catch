@@ -235,8 +235,8 @@ class OrdersController extends FOSRestController
             $entityManager->persist($order);
             $entityManager->flush();
 
-            $orders[] = [$orderId,date(DATE_ISO8601, strtotime($orderDate->format('Y-m-d H:i:s'))),$subtotalItems,$averageUnitPrice,$totalUniqueItems,$totalItems,$customerState,$grandTotal];
-/*
+            //$orders[] = [$orderId,date(DATE_ISO8601, strtotime($orderDate->format('Y-m-d H:i:s'))),$subtotalItems,$averageUnitPrice,$totalUniqueItems,$totalItems,$customerState,$grandTotal];
+
             $orders[] = [
                         'order_id'          => $orderId,
                         'order_datetime'    => date(DATE_ISO8601, strtotime($orderDate->format('Y-m-d H:i:s'))),
@@ -244,7 +244,7 @@ class OrdersController extends FOSRestController
                         'longitude'         => $longitude,
                         'latitude'          => $latitude,
                         'grand_total'       => $grandTotal
-                    ];*/
+                    ];
 
         }
         return $orders;
