@@ -17,14 +17,30 @@ After clone this repository, you need to install all dependencies by running the
 ```
 composer install
 ```
+## AWS Connection Preparation
+Please make sure you have AWS credential file under /home/%USER%/.aws/credential
+it should be contain like this code
+```
+[default]
+aws_access_key_id = AWS_KEY
+aws_secret_access_key = AWS_SECRET
+```
 
-### Database preparation
+## Email SMTP Service configuration
+in .env file, find this line code and change with your gmail account and password
+```
+MAILER_URL=gmail://account@gmail.com:P4S5w0Rd@localhost?encryption=tls
+```
+
+## Database preparation
 
 We need to edit .env file to configure database setting. we need to edit this line code
 ```
     DATABASE_URL="mysql://DB_USER:DB_PASSWORD@localhost:3306/DB_NAME"
 ```
 
+## Instalation
+### Create Database
 After that, please open your terminal and then create database by run this code in your root project directory
 ```
     php bin/console doctrine:database:create
@@ -36,3 +52,5 @@ Please run this code to generate table and data
 ```
 php bin/console doctrine:migrations:migrate
 ```
+
+
